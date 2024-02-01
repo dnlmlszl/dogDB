@@ -7,7 +7,7 @@ This is a Node.js server application that connects to a PostgreSQL database and 
 1. Clone the project from GitHub:
 
    ```bash
-   git clone https://github.com/username/dog_db_server.git
+   git clone https://github.com/dnlmlszl/dogDB.git
 
    ```
 
