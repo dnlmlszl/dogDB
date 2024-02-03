@@ -34,8 +34,8 @@ const typeDefs = `
     description: String
     url: String!
     image: String
-    breedId: DogBreed
-    userId: User
+    breedId: DogBreed!
+    userId: User!
   }
 
   type Query {
@@ -58,6 +58,27 @@ const typeDefs = `
       role: String, 
       profilePicture: String, 
       bio: String): User
+    
+    login(email: String!, password: String!): Token
+    
+     createDog(
+      name: String!, 
+      description: String, 
+      url: String!, 
+      image: String, 
+      breedId: ID!, 
+      userId: ID!): Dog
+
+    createDogBreed(
+      name: String!, 
+      group: String!, 
+      section: String!, 
+      provisional: String, 
+      country: String!, 
+      url: String!, 
+      image: String, 
+      pdf: String, 
+      dogId: ID): DogBreed
   }
 
 `;

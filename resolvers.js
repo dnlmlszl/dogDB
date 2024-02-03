@@ -153,6 +153,162 @@ const resolvers = {
         });
       }
     },
+    login: async (_, args, { currentUser, context: ctx }) => {
+      try {
+        if (!args || !args.email || !args.password) {
+          throw new GraphQLError('Invalid input arguments', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+            },
+          });
+        }
+
+        const user = await User.findOne({
+          where: {
+            email: args.email,
+          },
+        });
+
+        if (!user) {
+          throw new GraphQLError('User not found', {
+            extensions: {
+              code: 'USER_NOT_FOUND',
+              invalidArgs: args.email,
+            },
+          });
+        }
+
+        const passwordCorrect =
+          user === null
+            ? false
+            : await bcrypt.compare(args.password, user.passwordHash);
+
+        if (!passwordCorrect) {
+          throw new GraphQLError('wrong credentials', {
+            extensions: { code: 'BAD_USER_INPUT' },
+          });
+        }
+
+        const userForToken = {
+          email: user.email,
+          role: user.role,
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+        };
+
+        const accessToken = jwt.sign(userForToken, process.env.SECRET, {
+          expiresIn: '15m',
+        });
+
+        const refreshToken = jwt.sign(
+          userForToken,
+          process.env.REFRESH_TOKEN_SECRET,
+          {
+            expiresIn: '7d',
+          }
+        );
+
+        ctx.cookies.set('accessToken', accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          sameSite: 'lax',
+        });
+
+        return {
+          value: accessToken,
+        };
+      } catch (error) {
+        throw new GraphQLError('Login failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
+    createDog: async (_, args, { currentUser }) => {
+      try {
+        if (!currentUser) {
+          throw new GraphQLError('User not authenticated', {
+            extensions: {
+              code: 'UNAUTHORIZED',
+            },
+          });
+        }
+
+        if (!args || !args.name || !args.url || !args.breedId) {
+          throw new GraphQLError('Invalid input arguments', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+            },
+          });
+        }
+
+        const dog = await Dog.create({
+          ...args,
+          userId: currentUser.id,
+        });
+
+        const savedDog = await dog.save();
+
+        return savedDog;
+      } catch (error) {
+        throw new GraphQLError('Creating the dog failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
+    createDogBreed: async (_, args, { currentUser }) => {
+      try {
+        if (!currentUser || currentUser.role !== 'ADMIN') {
+          throw new GraphQLError('User not authenticated', {
+            extensions: {
+              code: 'UNAUTHORIZED',
+            },
+          });
+        }
+
+        if (
+          !args ||
+          !args.name ||
+          !args.group ||
+          !args.section ||
+          !args.country ||
+          !args.url
+        ) {
+          throw new GraphQLError('Invalid input arguments', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+            },
+          });
+        }
+
+        const dogBreed = await DogBreed.create({
+          ...args,
+        });
+
+        const savedDogBreed = await dogBreed.save();
+
+        return savedDogBreed;
+      } catch (error) {
+        console.error(error);
+
+        throw new GraphQLError('Creating the user failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
   },
 };
 
