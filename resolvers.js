@@ -153,7 +153,7 @@ const resolvers = {
         });
       }
     },
-    login: async (_, args, { currentUser, context: ctx }) => {
+    login: async (_, args, { res }) => {
       try {
         if (!args || !args.email || !args.password) {
           throw new GraphQLError('Invalid input arguments', {
@@ -209,7 +209,7 @@ const resolvers = {
           }
         );
 
-        ctx.cookies.set('accessToken', accessToken, {
+        res.cookie('accessToken', accessToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -301,6 +301,41 @@ const resolvers = {
         console.error(error);
 
         throw new GraphQLError('Creating the user failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
+    deleteDog: async (_, args, { currentUser }) => {
+      try {
+        if (!currentUser || currentUser.role !== 'ADMIN') {
+          throw new GraphQLError('User not authenticated', {
+            extensions: {
+              code: 'UNAUTHORIZED',
+            },
+          });
+        }
+
+        if (!args || !args.id) {
+          throw new GraphQLError('Invalid input arguments', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+            },
+          });
+        }
+
+        const deletedDog = await Dog.destroy({
+          where: {
+            id: args.id,
+          },
+        });
+
+        return deletedDog > 0;
+      } catch (error) {
+        throw new GraphQLError('Deleting the dog failed', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args,

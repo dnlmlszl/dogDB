@@ -19,6 +19,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const http = require('http');
 
@@ -29,6 +30,9 @@ const User = require('./models/User');
 const jwt = require('jsonwebtoken');
 
 const app = express();
+
+app.use(cookieParser());
+
 const httpServer = http.createServer(app);
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
@@ -66,7 +70,7 @@ app.use(express.json());
     cors(),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => {
+      context: async ({ res, req }) => {
         let currentUser = null;
         const auth = req ? req.headers.authorization : null;
         if (auth && auth.startsWith('Bearer ')) {
@@ -78,7 +82,7 @@ app.use(express.json());
             console.error('There was an error when authenticated', error);
           }
         }
-        return { currentUser };
+        return { currentUser, res };
       },
     })
   );

@@ -66,8 +66,7 @@ const typeDefs = `
       description: String, 
       url: String!, 
       image: String, 
-      breedId: ID!, 
-      userId: ID!): Dog
+      breedId: ID!): Dog
 
     createDogBreed(
       name: String!, 
@@ -79,6 +78,8 @@ const typeDefs = `
       image: String, 
       pdf: String, 
       dogId: ID): DogBreed
+
+    deleteDog(id: ID!): Boolean
   }
 
 `;
