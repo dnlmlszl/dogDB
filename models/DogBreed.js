@@ -3,43 +3,41 @@ const { sequelize } = require('../db/sequelize');
 
 const Dog = require('./Dog');
 
-const User = sequelize.define(
-  'User',
+const DogBreed = sequelize.define(
+  'DogBreed',
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
-    username: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    passwordHash: {
+    group: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    fullName: {
+    section: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    role: {
-      type: DataTypes.ENUM('READER', 'EDITOR', 'ADMIN'),
-      defaultValue: 'EDITOR',
-      allowNull: false,
-    },
-    profilePicture: {
-      type: DataTypes.STRING,
-    },
-    bio: {
+    provisional: {
       type: DataTypes.STRING,
     },
     country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING,
+    },
+    pdf: {
       type: DataTypes.STRING,
     },
     dogId: {
@@ -49,12 +47,10 @@ const User = sequelize.define(
         key: 'id',
       },
     },
-
-    // További mezők, mint email, stb.
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = User;
+module.exports = DogBreed;

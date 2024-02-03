@@ -11,6 +11,31 @@ const typeDefs = `
     fullName: String!
     profilePicture: String
     bio: String
+    country: String
+    dogId: [Dog]
+  }
+
+  type DogBreed {
+    id: ID!
+    name: String!
+    group: String!
+    section: String!
+    provisional: String
+    country: String!
+    url: String!
+    image: String
+    pdf: String
+    dogId: [Dog]
+  }
+
+  type Dog {
+    id: ID!
+    name: String!
+    description: String
+    url: String!
+    image: String
+    breedId: DogBreed
+    userId: User
   }
 
   type Query {
@@ -20,6 +45,8 @@ const typeDefs = `
     singleUser(userId: ID!): User
     token(email: String!, password: String!): Token
     me: User
+    dogs: [Dog]
+    dogBreeds: [DogBreed]
   }
 
   type Mutation {

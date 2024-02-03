@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.PSQL_EXTERNAL_URL, {
   dialect: 'postgres',
-  logging: false,
+  logging: console.log,
   dialectOptions: {
     ssl: {
       require: true,

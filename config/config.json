@@ -1,0 +1,24 @@
+{
+  "development": {
+    "url": "postgres://root:MIirv7sAlL4FSTELJyGRhe1E7R2iYevZ@dpg-cmttgr8cmk4c73914vag-a.frankfurt-postgres.render.com/test_database_yz3b",
+    "dialect": "postgres",
+    "migrationStorageTableName": "sequelize_meta",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  },
+  "production": {
+    "url": "postgres://root:MIirv7sAlL4FSTELJyGRhe1E7R2iYevZ@dpg-cmttgr8cmk4c73914vag-a.frankfurt-postgres.render.com/test_database_yz3b",
+    "dialect": "postgres",
+    "migrationStorageTableName": "sequelize_meta",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}

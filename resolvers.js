@@ -7,6 +7,8 @@ const pubsub = new PubSub();
 const { v4: uuidv4 } = require('uuid');
 
 const User = require('./models/User');
+const Dog = require('./models/Dog');
+const DogBreed = require('./models/DogBreed');
 
 const resolvers = {
   Query: {
@@ -57,6 +59,32 @@ const resolvers = {
         }
 
         return user;
+      } catch (error) {
+        throw new GraphQLError('Database retrieval error', {
+          extensions: {
+            code: 'DATABASE_ERROR',
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
+    dogs: async () => {
+      try {
+        const dogs = await Dog.findAll();
+        return dogs;
+      } catch (error) {
+        throw new GraphQLError('Database retrieval error', {
+          extensions: {
+            code: 'DATABASE_ERROR',
+            errorMessage: error.message,
+          },
+        });
+      }
+    },
+    dogBreeds: async () => {
+      try {
+        const dogBreeds = await DogBreed.findAll();
+        return dogBreeds;
       } catch (error) {
         throw new GraphQLError('Database retrieval error', {
           extensions: {
