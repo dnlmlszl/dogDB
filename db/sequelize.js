@@ -13,7 +13,7 @@ const sequelize = new Sequelize(process.env.PSQL_EXTERNAL_URL, {
 
 const initializeDatabase = async () => {
   try {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ alter: true });
 
     console.log('Database synchronized successfully');
   } catch (error) {

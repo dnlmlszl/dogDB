@@ -5,9 +5,9 @@ const User = sequelize.define(
   'User',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
     },
     username: {
       type: DataTypes.STRING,
@@ -21,6 +21,21 @@ const User = sequelize.define(
     passwordHash: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM('READER', 'EDITOR', 'ADMIN'),
+      defaultValue: 'EDITOR',
+      allowNull: false,
+    },
+    profilePicture: {
+      type: DataTypes.STRING,
+    },
+    bio: {
+      type: DataTypes.STRING,
     },
     // További mezők, mint email, stb.
   },
